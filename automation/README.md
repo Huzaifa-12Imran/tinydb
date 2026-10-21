@@ -117,6 +117,6 @@ A serial run gives this exact global order. With xdist each worker follows the s
 
 ## 7. Before you submit
 
-- Replace the `Owner: Member N` lines at the top of each test file with real names, and commit each member's files from their own account so the Git history shows individual work.
+- Each test file names its owner at the top (Huzaifa Imran or Musab Butt). Commit each member's files from their own account so the Git history shows individual work.
 - Put the setup video in `automation/setup_video/`.
 - Make the repository public, submit the link on GCR, and push nothing after the due date.

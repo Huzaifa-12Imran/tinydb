@@ -1,7 +1,7 @@
 """
 Module 2, classes Query and QueryInstance (tinydb/queries.py)
 
-Owner: Member 1 (replace with your name before committing)
+Owner: Huzaifa Imran
 
 Techniques: ECP, BVA. See docs/ECP_BVA_NOTES.md section 2.
 Functions covered: ==, !=, <, <=, >, >=, exists, matches, search, test, any,

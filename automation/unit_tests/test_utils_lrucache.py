@@ -1,7 +1,7 @@
 """
 Module 1, class LRUCache (tinydb/utils.py)
 
-Owner: Member 1 (replace with your name before committing)
+Owner: Huzaifa Imran
 
 Techniques: ECP, BVA. See docs/ECP_BVA_NOTES.md section 1.
 Functions covered: set, get, __getitem__, __delitem__, clear, lru, length,

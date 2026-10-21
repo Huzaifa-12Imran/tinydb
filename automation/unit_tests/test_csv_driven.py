@@ -1,7 +1,7 @@
 """
 Task 3: data driven tests that read their data from external CSV files.
 
-Owner: Member 1 and Member 2 (one test each is a fine split)
+Owner: Huzaifa Imran and Musab Butt (one test each)
 
 Data files (automation/data):
     query_cases.csv        Query comparison operators (ECP + BVA)

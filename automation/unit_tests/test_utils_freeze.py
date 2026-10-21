@@ -1,7 +1,7 @@
 """
 Module 1, functions freeze() and FrozenDict (tinydb/utils.py)
 
-Owner: Member 2 (replace with your name before committing)
+Owner: Musab Butt
 
 Techniques: ECP, BVA. See docs/ECP_BVA_NOTES.md section 1.
 """
