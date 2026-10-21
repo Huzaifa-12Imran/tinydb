@@ -1,10 +1,3 @@
-"""
-Module 1, functions freeze() and FrozenDict (tinydb/utils.py)
-
-Owner: Musab Butt
-
-Techniques: ECP, BVA. See docs/ECP_BVA_NOTES.md section 1.
-"""
 import pytest
 
 from tinydb.utils import FrozenDict, freeze
@@ -13,6 +6,8 @@ pytestmark = pytest.mark.utils
 
 
 class TestFreeze:
+    """Tests conversion of scalar and container values into immutable representations, including nested structures."""
+
     @pytest.mark.smoke
     @pytest.mark.ecp
     def test_freeze_dict_returns_frozendict(self):
@@ -63,6 +58,8 @@ class TestFreeze:
 
 
 class TestFrozenDict:
+    """Tests hashing, dictionary-style reads, key usage, and protection against mutation."""
+
     @pytest.mark.ecp
     def test_equal_dicts_have_equal_hashes_regardless_of_insertion_order(self):
         first = FrozenDict([("a", 1), ("b", 2)])

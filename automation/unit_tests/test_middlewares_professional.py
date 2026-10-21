@@ -1,11 +1,3 @@
-"""
-Module 3, classes Middleware and CachingMiddleware (tinydb/middlewares.py)
-
-Owner: Musab Butt
-
-Techniques: ECP, BVA. See docs/ECP_BVA_NOTES.md section 3.
-Functions covered: __call__, __getattr__, read, write, flush, close.
-"""
 import pytest
 
 from tinydb import TinyDB
@@ -25,6 +17,8 @@ def make_cache(storage_cls, size=None):
 
 
 class TestMiddlewareBase:
+    
+
     @pytest.mark.smoke
     @pytest.mark.ecp
     def test_call_creates_the_storage_and_returns_the_middleware(self):
@@ -68,6 +62,8 @@ class TestMiddlewareBase:
 
 
 class TestCachingRead:
+    """Tests cached reads, initial reads from storage, empty results, and behavior after closing."""
+
     @pytest.mark.smoke
     @pytest.mark.ecp
     def test_first_read_of_empty_storage_returns_none(self):
@@ -111,6 +107,8 @@ class TestCachingRead:
 
 
 class TestCachingWrite:
+    """Tests buffered writes and the cache threshold at which data is flushed to storage."""
+
     @pytest.mark.ecp
     def test_write_goes_to_cache_not_to_storage(self, counting_storage_cls):
         middleware = make_cache(counting_storage_cls)
@@ -152,6 +150,8 @@ class TestCachingWrite:
 
 
 class TestCachingFlush:
+    """Tests explicit flushing, no-op flushes, modification-counter reset, and closed-state behavior."""
+
     @pytest.mark.run_order(1)
     @pytest.mark.ecp
     def test_flush_writes_pending_data_to_storage(self, counting_storage_cls):
@@ -195,6 +195,8 @@ class TestCachingFlush:
 
 
 class TestCachingClose:
+    """Tests persistence and cleanup when the middleware is closed."""
+
     @pytest.mark.ecp
     def test_close_flushes_pending_writes(self, counting_storage_cls):
         middleware = make_cache(counting_storage_cls)
@@ -232,6 +234,8 @@ class TestCachingClose:
 
 
 class TestCachingWithTinyDB:
+    """Tests end-to-end behavior when CachingMiddleware is used through TinyDB."""
+
     @pytest.mark.smoke
     @pytest.mark.ecp
     def test_documents_are_readable_through_the_cache(self):
