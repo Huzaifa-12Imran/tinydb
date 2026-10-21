@@ -1,0 +1,9 @@
+case_id,capacity,keys,expected_lru
+LRU-01,3,a|b,a|b
+LRU-02,2,a|b|c,b|c
+LRU-03,1,a|b,b
+LRU-04,0,a,
+LRU-05,,a|b|c|d,a|b|c|d
+LRU-06,2,a|b|a,b|a
+LRU-07,3,a|b|c|d|e,c|d|e
+LRU-08,-1,a,

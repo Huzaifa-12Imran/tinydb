@@ -1,0 +1,9 @@
+case_id,write_cache_size,writes,expected_storage_writes
+CF-01,1,1,1
+CF-02,3,2,0
+CF-03,3,3,1
+CF-04,3,4,1
+CF-05,3,6,2
+CF-06,5,10,2
+CF-07,2,0,0
+CF-08,1000,999,0

@@ -1,0 +1,19 @@
+case_id,field,operator,rhs_json,document_json,expected
+Q-01,age,eq,30,"{""age"": 30}",true
+Q-02,age,eq,30,"{""age"": 31}",false
+Q-03,age,ne,30,"{""age"": 31}",true
+Q-04,age,ne,30,"{""age"": 30}",false
+Q-05,age,ge,18,"{""age"": 17}",false
+Q-06,age,ge,18,"{""age"": 18}",true
+Q-07,age,ge,18,"{""age"": 19}",true
+Q-08,age,lt,18,"{""age"": 17}",true
+Q-09,age,lt,18,"{""age"": 18}",false
+Q-10,age,le,18,"{""age"": 18}",true
+Q-11,age,le,18,"{""age"": 19}",false
+Q-12,age,gt,18,"{""age"": 18}",false
+Q-13,age,gt,18,"{""age"": 19}",true
+Q-14,name,eq,"""ali""","{""name"": ""ali""}",true
+Q-15,name,eq,"""ali""","{""name"": ""Ali""}",false
+Q-16,age,eq,30,"{""name"": ""no age field""}",false
+Q-17,score,gt,0.5,"{""score"": 0.75}",true
+Q-18,score,lt,0,"{""score"": -0.01}",true

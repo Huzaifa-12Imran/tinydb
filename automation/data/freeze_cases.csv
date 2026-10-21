@@ -1,0 +1,9 @@
+case_id,input_json,expected_type,hashable
+FR-01,"{""a"": 1}",FrozenDict,true
+FR-02,"[1, 2]",tuple,true
+FR-03,5,int,true
+FR-04,"""x""",str,true
+FR-05,null,NoneType,true
+FR-06,"{""a"": [1, 2]}",FrozenDict,true
+FR-07,[],tuple,true
+FR-08,"[[1], [2]]",tuple,true
