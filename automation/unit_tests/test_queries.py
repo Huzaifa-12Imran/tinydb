@@ -17,6 +17,8 @@ pytestmark = pytest.mark.queries
 
 
 class TestPathBuilding:
+    """Tests building query paths with attribute access, item access, and where()."""
+
     @pytest.mark.smoke
     @pytest.mark.negative
     def test_evaluating_an_empty_query_raises_runtimeerror(self):
@@ -55,6 +57,8 @@ class TestPathBuilding:
 
 
 class TestComparison:
+    """Tests ==, !=, <, <=, >, >= including boundary values and missing fields."""
+
     @pytest.mark.smoke
     @pytest.mark.ecp
     def test_eq_matches_equal_value_only(self):
@@ -104,6 +108,13 @@ class TestComparison:
     def test_gt_boundary_at_18(self, age, expected):
         assert bool((where("age") > 18)({"age": age})) is expected
 
+    @pytest.mark.bva
+    @pytest.mark.parametrize(
+        "value, expected", [(17.99, False), (18.0, False), (18.01, True)]
+    )
+    def test_gt_boundary_at_18_with_floats(self, value, expected):
+        assert bool((where("n") > 18)({"n": value})) is expected
+
     @pytest.mark.ecp
     def test_float_and_int_compare_numerically(self):
         assert (where("n") == 1)({"n": 1.0})
@@ -118,6 +129,8 @@ class TestComparison:
 
 
 class TestExists:
+    """Tests the exists() query for present, absent, None, and nested fields."""
+
     @pytest.mark.smoke
     @pytest.mark.ecp
     def test_exists_true_when_key_present(self):
@@ -142,6 +155,8 @@ class TestExists:
 
 
 class TestMatchesAndSearch:
+    """Tests regex-based queries matches() and search() with strings and non-strings."""
+
     @pytest.mark.ecp
     def test_matches_full_pattern(self):
         assert where("s").matches(r"^\d+$")({"s": "123"})
@@ -186,6 +201,8 @@ class TestMatchesAndSearch:
 
 
 class TestCustomTest:
+    """Tests test() with custom functions and map() value transformation."""
+
     @pytest.mark.ecp
     def test_test_runs_the_function_on_the_field_value(self):
         assert where("n").test(lambda v: v % 2 == 0)({"n": 4})
@@ -213,6 +230,8 @@ class TestCustomTest:
 
 
 class TestSequenceQueries:
+    """Tests any(), all(), and one_of() on lists, sub-queries, and empty inputs."""
+
     @pytest.mark.ecp
     def test_any_with_list_matches_when_one_element_overlaps(self):
         assert where("l").any([1, 2, 3])({"l": [3, 4, 5]})
@@ -266,6 +285,8 @@ class TestSequenceQueries:
 
 
 class TestFragmentAndNoop:
+    """Tests fragment() partial-document matching and the always-true noop() query."""
+
     @pytest.mark.ecp
     def test_fragment_matches_when_all_fragment_keys_equal(self):
         assert Query().fragment({"a": 1})({"a": 1, "b": 2})
@@ -294,8 +315,16 @@ class TestFragmentAndNoop:
         assert combined({"a": 1})
         assert not combined({"a": 2})
 
+    @pytest.mark.ecp
+    def test_noop_combined_with_or_always_matches(self):
+        combined = Query().noop() | (where("a") == 1)
+        assert combined({"a": 1})
+        assert combined({"a": 2})
+
 
 class TestCombinators:
+    """Tests combining queries with &, |, and ~ including truth tables and precedence."""
+
     @pytest.mark.smoke
     @pytest.mark.ecp
     @pytest.mark.parametrize(
@@ -341,8 +370,33 @@ class TestCombinators:
     def test_combining_returns_a_queryinstance(self):
         assert isinstance((where("a") == 1) & (where("b") == 2), QueryInstance)
 
+    @pytest.mark.ecp
+    def test_and_binds_tighter_than_or(self):
+        # Python precedence: A & B | C is (A & B) | C
+        query = (where("a") == 1) & (where("b") == 2) | (where("c") == 3)
+        assert query({"a": 0, "b": 0, "c": 3})
+        assert not query({"a": 1, "b": 0, "c": 0})
+
+    @pytest.mark.ecp
+    @pytest.mark.parametrize(
+        "document",
+        [
+            {"a": 1, "b": 2},
+            {"a": 1, "b": 0},
+            {"a": 0, "b": 2},
+            {"a": 0, "b": 0},
+        ],
+    )
+    def test_not_of_and_equals_or_of_nots(self, document):
+        # De Morgan's law: ~(A & B) == ~A | ~B
+        first = ~((where("a") == 1) & (where("b") == 2))
+        second = ~(where("a") == 1) | ~(where("b") == 2)
+        assert bool(first(document)) == bool(second(document))
+
 
 class TestHashingAndCaching:
+    """Tests query equality, hashing, commutativity, and cacheability."""
+
     @pytest.mark.ecp
     def test_same_query_has_same_hash_and_is_equal(self):
         assert hash(where("a") == 1) == hash(where("a") == 1)
