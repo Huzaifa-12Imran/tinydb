@@ -17,7 +17,7 @@ def make_cache(storage_cls, size=None):
 
 
 class TestMiddlewareBase:
-    
+    """Tests the base Middleware: storage creation, attribute forwarding, and nesting."""
 
     @pytest.mark.smoke
     @pytest.mark.ecp
@@ -97,6 +97,13 @@ class TestCachingRead:
         middleware = make_cache(MemoryStorage)
         middleware.write({"a": 1})
         assert middleware.read() == {"a": 1}
+
+    @pytest.mark.ecp
+    def test_read_returns_the_latest_of_several_writes(self):
+        middleware = make_cache(MemoryStorage)
+        middleware.write({"a": 1})
+        middleware.write({"b": 2})
+        assert middleware.read() == {"b": 2}
 
     @pytest.mark.negative
     def test_read_after_close_raises_valueerror(self):
@@ -192,6 +199,25 @@ class TestCachingFlush:
         middleware.close()
         with pytest.raises(ValueError):
             middleware.flush()
+
+    @pytest.mark.run_order(6)
+    @pytest.mark.ecp
+    def test_flush_persists_only_the_latest_of_several_writes(self, counting_storage_cls):
+        middleware = make_cache(counting_storage_cls)
+        middleware.write({"a": 1})
+        middleware.write({"b": 2})
+        middleware.flush()
+        assert middleware.storage.memory == {"b": 2}
+        assert middleware.storage.write_count == 1
+
+    @pytest.mark.run_order(7)
+    @pytest.mark.bva
+    def test_flush_right_after_a_threshold_flush_does_nothing(self, counting_storage_cls):
+        middleware = make_cache(counting_storage_cls, 2)
+        middleware.write({"n": 0})
+        middleware.write({"n": 1})
+        middleware.flush()
+        assert middleware.storage.write_count == 1
 
 
 class TestCachingClose:
